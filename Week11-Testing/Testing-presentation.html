@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing — Intro</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --charcoal: #36454f;
+    --muted: #5e5e5e;
+    --rule: #d6d6d6;
+    --bg: #ffffff;
+    --accent: #ad0000;
+    --soft: #f4f4f4;
+    --good: #20794d;
+    --dark: #1a1a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: #2a2a2a;
+    font-family: Calibri, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  /* === Slide container === */
+  .deck {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    background: var(--bg);
+    position: relative;
+    display: none;
+    padding: 60px 70px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+  .slide.active { display: block; }
+  .slide.dark {
+    background: var(--dark);
+    color: var(--bg);
+  }
+
+  /* === Type === */
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0;
+  }
+  .dark .eyebrow { color: #888; }
+
+  h1.huge {
+    font-family: Georgia, serif;
+    font-size: 96px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  h1.medium {
+    font-family: Georgia, serif;
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -1px;
+  }
+  h1.small {
+    font-family: Georgia, serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  h2 {
+    font-family: Georgia, serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  h3 {
+    font-family: Calibri, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  p, li { font-size: 18px; line-height: 1.5; }
+  p.lead { font-size: 22px; color: var(--muted); font-style: italic; }
+  p.small { font-size: 14px; color: var(--muted); }
+
+  .accent { color: var(--accent); }
+  .good   { color: var(--good); }
+  .muted  { color: var(--muted); }
+  .italic { font-style: italic; }
+
+  code, .mono {
+    font-family: "SF Mono", Menlo, Consolas, "Courier New", monospace;
+    font-size: 0.92em;
+  }
+
+  .accent-rule {
+    width: 50px; height: 4px; background: var(--accent);
+    margin: 18px 0;
+  }
+
+  /* === Layouts === */
+  .stack-tight > * + * { margin-top: 14px; }
+  .stack > * + * { margin-top: 22px; }
+  .stack-wide > * + * { margin-top: 36px; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .two-col-1-2 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+  }
+
+  /* === Cards / boxes === */
+  .card {
+    background: var(--soft);
+    border: 1px solid var(--rule);
+    padding: 26px 28px;
+    border-radius: 4px;
+  }
+  .card-top-rule {
+    border-top: 4px solid var(--ink);
+  }
+  .card-top-rule.accent-top {
+    border-top-color: var(--accent);
+  }
+
+  .codebox {
+    background: var(--soft);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 18px;
+    color: var(--ink);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .quote-rule {
+    border-left: 3px solid var(--accent);
+    padding-left: 18px;
+  }
+
+  /* === Bullets === */
+  ul.clean { list-style: none; }
+  ul.clean li {
+    padding: 6px 0;
+    position: relative;
+    padding-left: 22px;
+  }
+  ul.clean li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  ul.dot li {
+    margin-left: 20px;
+    padding: 4px 0;
+  }
+
+  /* Number list with big numerals */
+  .num-row {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 12px 0;
+  }
+  .num-row .n {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+
+  /* Partition buckets */
+  .buckets {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .bucket {
+    background: var(--soft);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* Big stat */
+  .stat {
+    font-family: Georgia, serif;
+    font-size: 180px;
+    line-height: 0.95;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: -4px;
+  }
+
+  /* Loop diagram */
+  .loop {
+    display: grid;
+    grid-template-columns: 1fr 30px 1fr 30px 1fr 30px 1fr;
+    align-items: center;
+    gap: 0;
+    margin: 24px 0;
+  }
+  .loop-step {
+    background: var(--soft);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 16px 14px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 3px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .loop-step .step-n {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .loop-step strong { font-size: 15px; }
+  .loop-arrow {
+    text-align: center;
+    color: var(--accent);
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  /* Vs columns */
+  .vs-card {
+    background: var(--soft);
+    border: 1px solid var(--rule);
+    padding: 24px 26px;
+    border-radius: 4px;
+  }
+  .vs-card.left { border-top: 4px solid var(--ink); }
+  .vs-card.right { border-top: 4px solid var(--accent); }
+
+  /* Footer / nav */
+  .footer {
+    position: absolute;
+    bottom: 22px;
+    left: 70px;
+    right: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dark .footer { color: #888; }
+
+  /* Slide controls */
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: Calibri, sans-serif;
+    z-index: 100;
+    user-select: none;
+  }
+  .controls button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 8px;
+  }
+  .controls button:hover { color: var(--accent); }
+  .controls .counter {
+    margin: 0 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Story box (Reinhart-Rogoff slide) */
+  .story-block {
+    background: var(--soft);
+    padding: 28px 32px;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+  .story-block .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  /* Test-quality grid */
+  .quality-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-top: 18px;
+  }
+  .qbox {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    border-radius: 3px;
+  }
+  .qbox h3 {
+    color: var(--accent);
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .qbox p { font-size: 14px; color: var(--muted); }
+
+  /* Exercise / discussion slides */
+  .exercise-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .ex-prompt {
+    background: var(--soft);
+    border-left: 4px solid var(--accent);
+    padding: 24px 28px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 24px;
+  }
+  .ex-prompt p { font-size: 18px; line-height: 1.55; }
+  .ex-prompt p + p { margin-top: 10px; }
+  .ex-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .ex-meta span strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .ex-discuss {
+    margin-top: 22px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .ex-discuss strong {
+    font-style: normal;
+    color: var(--ink);
+  }
+
+  /* Test types table */
+  .types-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 16px;
+  }
+  .types-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .types-table td:first-child {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    width: 180px;
+  }
+  .types-table td:nth-child(2) {
+    font-style: italic;
+    color: var(--muted);
+    width: 240px;
+  }
+  .types-table tr:last-child td { border-bottom: none; }
+
+  /* Print-optimized fallback (in case someone prints) */
+  @media print {
+    body { background: white; overflow: visible; }
+    .deck { display: block; height: auto; }
+    .slide {
+      display: block !important;
+      page-break-after: always;
+      box-shadow: none;
+      width: 100%;
+      height: auto;
+      min-height: 720px;
+    }
+    .controls { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- =============================================================== -->
+<!-- 1. TITLE -->
+<!-- =============================================================== -->
+<section class="slide dark active">
+  <p class="eyebrow">Lecture</p>
+
+  <div style="margin-top: 140px;">
+    <h1 class="huge" style="color: white;">Testing</h1>
+    <p class="lead" style="color: #b8b8b8; margin-top: 18px;">
+      Why we test, what we test, and how to do it without losing your mind.
+    </p>
+    <div class="accent-rule" style="margin-top: 36px;"></div>
+  </div>
+
+  <div class="footer">
+    <span><strong style="color: white;">Reproducible Research</strong></span>
+    <span>90 min</span>
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 2. THE COST -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">The cost</p>
+
+  <div class="two-col-1-2" style="margin-top: 30px; align-items: center; height: 520px;">
+    <div>
+      <div class="stat">$2.41T</div>
+      <p class="italic" style="margin-top: 14px; font-size: 15px; color: var(--ink);">
+        estimated annual cost of poor software quality in the US
+      </p>
+      <p class="small" style="margin-top: 6px;">CISQ — Cost of Poor Software Quality, 2022</p>
+    </div>
+
+    <div style="border-left: 1px solid var(--rule); padding-left: 36px;">
+      <h3>Bugs are not just embarrassing.</h3>
+      <ul class="clean" style="margin-top: 18px;">
+        <li>wasted compute time</li>
+        <li>broken pipelines</li>
+        <li>retracted papers</li>
+        <li>failed releases</li>
+        <li>damaged trust in your numbers</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 3. A REAL STORY (Reinhart-Rogoff) -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">A real story</p>
+  <h1 class="medium" style="margin-top: 10px;">A spreadsheet bug in<br>a famous economics paper</h1>
+
+  <div class="story-block" style="margin-top: 36px;">
+    <p class="label">REINHART &amp; ROGOFF · 2010</p>
+    <p style="font-size: 18px; line-height: 1.55;">
+      Two Harvard economists published a paper claiming countries with debt above 90% of GDP saw average real growth of <strong>−0.1%</strong>. The paper was widely cited in policy debates around austerity in the US and Europe.
+    </p>
+    <p style="font-size: 18px; line-height: 1.55; margin-top: 12px;">
+      Three years later, UMass economists examined the spreadsheet. <strong class="accent">An AVERAGE() formula didn't include all the rows it should have</strong> — five countries (Australia, Austria, Belgium, Canada, Denmark) were excluded. Once corrected, the figure changed from −0.1% to <strong>+2.2%</strong>.
+    </p>
+  </div>
+
+  <p style="margin-top: 26px; font-size: 17px;">
+    No one had checked. There was no test. The spec — "compute the average growth across these countries" — had no automated guardrail.
+  </p>
+  <p class="small" style="margin-top: 10px;">
+    Herndon, Ash &amp; Pollin (2013), <em>Does High Public Debt Consistently Stifle Economic Growth?</em>
+  </p>
+</section>
+
+<!-- =============================================================== -->
+<!-- 4. WHAT TESTING IS / ISN'T -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">What testing is</p>
+  <h1 class="medium" style="margin-top: 12px;">
+    Putting your code under attack —<br>
+    <span class="accent italic">on purpose, before anyone else does.</span>
+  </h1>
+
+  <div class="two-col" style="margin-top: 50px;">
+    <div>
+      <p class="eyebrow good" style="color: var(--good);">IS</p>
+      <ul class="dot" style="margin-top: 14px;">
+        <li>trying to make the program fail</li>
+        <li>checking inputs you'd never type by accident</li>
+        <li>writing down what your code <em>promises</em></li>
+        <li>a safety net for the version of you in 6 months</li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow accent">IS NOT</p>
+      <ul class="dot muted" style="margin-top: 14px;">
+        <li>running your code once and seeing it work</li>
+        <li>exhaustive — you can't try every input</li>
+        <li>a substitute for thinking about the problem</li>
+        <li>something to add at the very end</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 5. WARM-UP DISCUSSION (NEW) -->
+<!-- =============================================================== -->
+<section class="slide">
+  <span class="exercise-tag">Discuss · 5 min</span>
+  <h1 class="medium" style="margin-top: 22px;">A bug you've encountered</h1>
+
+  <div class="ex-prompt">
+    <p>Think back to the last time your code did something it shouldn't have — produced wrong numbers, crashed unexpectedly, or quietly returned <code>NA</code> when it shouldn't.</p>
+    <p style="margin-top: 14px;"><strong>Turn to the person next to you and answer two questions:</strong></p>
+    <ul class="dot" style="margin-top: 10px;">
+      <li>What was the bug?</li>
+      <li>What kind of input would have caught it earlier — if you'd thought to try it?</li>
+    </ul>
+  </div>
+
+  <div class="ex-meta">
+    <span><strong>Pairs.</strong> 4 minutes to talk, then we share 2–3 examples.</span>
+  </div>
+
+  <div class="ex-discuss">
+    <strong>Why this matters:</strong> almost every bug has a "smallest input that would have caught it" — and that input is rarely the one you'd type by accident. That gap is what testing is for.
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 6. TYPES OF TESTS -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Vocabulary</p>
+  <h1 class="medium" style="margin-top: 12px;">Types of tests you'll hear about</h1>
+
+  <table class="types-table">
+    <tr>
+      <td>Unit test</td>
+      <td>one function, in isolation</td>
+      <td>"Does <code>normalize_scores([1,2,3])</code> return <code>[0, 0.5, 1]</code>?"</td>
+    </tr>
+    <tr>
+      <td>Integration test</td>
+      <td>several pieces, together</td>
+      <td>"When my pipeline reads the CSV, cleans it, and saves output — does the output look right?"</td>
+    </tr>
+    <tr>
+      <td>Regression test</td>
+      <td>"don't bring back old bugs"</td>
+      <td>"Last month a date parsing bug bit us. We added a test. It must keep passing forever."</td>
+    </tr>
+    <tr>
+      <td>Smoke test</td>
+      <td>"does it even run?"</td>
+      <td>"Render the Quarto doc end-to-end. No errors? Good enough."</td>
+    </tr>
+  </table>
+
+  <p style="margin-top: 32px; font-size: 16px;" class="muted italic">
+    Today we focus on <strong style="color: var(--ink); font-style: normal;">unit tests</strong> — they're the foundation. Once you can write good unit tests, the rest follow the same logic.
+  </p>
+</section>
+
+<!-- =============================================================== -->
+<!-- 6. WHY 'JUST TRY IT' DOESN'T WORK -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Why "just try it" doesn't work</p>
+  <h1 class="small" style="margin-top: 12px;">A thought experiment</h1>
+
+  <div class="codebox" style="margin-top: 26px;">
+    def divide(a, b):  return a / b
+  </div>
+
+  <div style="margin-top: 28px;">
+    <div class="num-row">
+      <div class="n">01</div>
+      <div>
+        <strong>Exhaustive testing is infeasible.</strong>
+        <span class="muted italic"> Even simple functions have effectively infinite inputs.</span>
+      </div>
+    </div>
+    <div class="num-row">
+      <div class="n">02</div>
+      <div>
+        <strong>Random inputs miss the interesting cases.</strong>
+        <span class="muted italic"> 1,000 random numbers will almost never hit zero — but zero is exactly what breaks this.</span>
+      </div>
+    </div>
+    <div class="num-row">
+      <div class="n">03</div>
+      <div>
+        <strong>"Typical" inputs miss everything.</strong>
+        <span class="muted italic"> The input you'd type is the input you've already debugged for.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 7. PARTITIONING -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">The key idea</p>
+  <h1 class="medium" style="margin-top: 8px;">Partitioning</h1>
+  <p class="lead" style="margin-top: 14px;">
+    Group inputs by the cases they exercise. Test one example from each group.
+  </p>
+
+  <div class="buckets">
+    <div class="bucket">0</div>
+    <div class="bucket">1</div>
+    <div class="bucket">−1</div>
+    <div class="bucket">small +</div>
+    <div class="bucket">small −</div>
+    <div class="bucket">huge +</div>
+    <div class="bucket">huge −</div>
+  </div>
+
+  <p style="margin-top: 28px; font-size: 18px;">
+    <strong>7 categories of input × 7 = 49 pairs to test.</strong>
+    <span class="muted italic"> Not infinite. Not "a few." Just enough to cover every meaningfully different case.</span>
+  </p>
+
+  <div class="quote-rule" style="margin-top: 32px;">
+    <p style="font-size: 15px;" class="muted">
+      Watch the <strong style="color: var(--ink);">boundaries</strong> — 0, empty inputs, type maxima, first &amp; last elements. Bugs cluster at edges.
+    </p>
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 8. PARTITIONING EXERCISE (NEW) -->
+<!-- =============================================================== -->
+<section class="slide">
+  <span class="exercise-tag">Discuss · 7 min</span>
+  <h1 class="medium" style="margin-top: 22px;">Partition this function</h1>
+
+  <div class="codebox" style="margin-top: 24px;">
+    days_between(date_a, date_b)<br>
+    <span style="color: var(--muted); font-size: 14px; font-style: italic;"># Returns the number of full days between two dates.</span><br>
+    <span style="color: var(--muted); font-size: 14px; font-style: italic;"># Negative if date_b is earlier than date_a.</span>
+  </div>
+
+  <div class="ex-prompt" style="margin-top: 24px;">
+    <p><strong>Without writing any tests yet</strong>, list the partitions of the input space.</p>
+    <p>What categories of <code>(date_a, date_b)</code> pairs deserve a separate test? Aim for 5–8 partitions, and give one concrete example pair for each.</p>
+  </div>
+
+  <div class="ex-meta">
+    <span><strong>Pairs.</strong> 5 min to brainstorm, 2 min to share with the room.</span>
+  </div>
+
+  <div class="ex-discuss">
+    <strong>Hint:</strong> think about boundaries — same day, adjacent days, year crossings, leap years, very large gaps. And: are there inputs that <em>shouldn't</em> be valid?
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 9. BLACKBOX VS WHITEBOX -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Two ways in</p>
+  <h1 class="medium" style="margin-top: 12px;">Blackbox vs Whitebox</h1>
+
+  <div class="two-col" style="margin-top: 36px;">
+    <div class="vs-card left">
+      <p class="eyebrow">BLACKBOX</p>
+      <h2 style="margin-top: 8px; font-size: 22px;">Test against the spec.</h2>
+      <p class="muted italic" style="margin-top: 10px; font-size: 15px;">You don't read the code.</p>
+      <ul class="clean" style="margin-top: 14px; font-size: 14px;">
+        <li>catches misunderstandings of the spec</li>
+        <li>tests survive when implementation changes</li>
+        <li>may miss unusual code paths</li>
+      </ul>
+    </div>
+    <div class="vs-card right">
+      <p class="eyebrow accent">WHITEBOX</p>
+      <h2 style="margin-top: 8px; font-size: 22px;">Test against the code.</h2>
+      <p class="muted italic" style="margin-top: 10px; font-size: 15px;">You read every branch.</p>
+      <ul class="clean" style="margin-top: 14px; font-size: 14px;">
+        <li>catches edge cases hidden in if/else</li>
+        <li>aims for full coverage of paths</li>
+        <li>tests may need updating when code changes</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="text-align: center; margin-top: 32px; font-size: 18px;" class="italic">
+    <strong>In practice: do both. Blackbox first, whitebox second.</strong>
+  </p>
+</section>
+
+<!-- =============================================================== -->
+<!-- 11. SPOT THE MISSING TEST (NEW) -->
+<!-- =============================================================== -->
+<section class="slide">
+  <span class="exercise-tag">Discuss · 6 min</span>
+  <h1 class="medium" style="margin-top: 22px;">Spot the missing test</h1>
+
+  <p style="margin-top: 18px; font-size: 16px;" class="muted italic">
+    A colleague wrote <code>mean_positive(x)</code> — returns the mean of the positive values in a list. They tested it with these three inputs:
+  </p>
+
+  <div class="codebox" style="margin-top: 18px; font-size: 16px;">
+    mean_positive([1, 2, 3])      &nbsp;→&nbsp; passes ✓<br>
+    mean_positive([5, 10, 15])    &nbsp;→&nbsp; passes ✓<br>
+    mean_positive([2.5, 3.5, 4])  &nbsp;→&nbsp; passes ✓
+  </div>
+
+  <div class="ex-prompt" style="margin-top: 22px;">
+    <p>They declare the function "tested." <strong>What inputs are they missing?</strong></p>
+    <p style="margin-top: 8px;">List at least three input cases that could expose a bug they haven't ruled out.</p>
+  </div>
+
+  <div class="ex-meta">
+    <span><strong>Pairs.</strong> 4 min to list, then we compare.</span>
+  </div>
+
+  <div class="ex-discuss">
+    <strong>The point:</strong> three "happy path" tests look thorough but cover only one partition. Real testing means asking "what input would <em>break</em> this?" — not "what input do I expect to work?"
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 12. THE LOOP -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">The workflow</p>
+  <h1 class="medium" style="margin-top: 12px;">The loop you'll actually use</h1>
+
+  <div class="loop">
+    <div class="loop-step">
+      <span class="step-n">STEP 1</span>
+      <strong>Write a test</strong>
+      <span class="muted" style="font-size: 12px; margin-top: 4px;">based on the spec</span>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <span class="step-n">STEP 2</span>
+      <strong>Run it. Watch it fail.</strong>
+      <span class="muted" style="font-size: 12px; margin-top: 4px;">if it passes, is it really testing anything?</span>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <span class="step-n">STEP 3</span>
+      <strong>Fix the code</strong>
+      <span class="muted" style="font-size: 12px; margin-top: 4px;">smallest change to make it pass</span>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <span class="step-n">STEP 4</span>
+      <strong>Re-run the whole suite</strong>
+      <span class="muted" style="font-size: 12px; margin-top: 4px;">did your fix break something else?</span>
+    </div>
+  </div>
+
+  <div class="quote-rule" style="margin-top: 36px;">
+    <p style="font-size: 17px;">
+      The point of keeping tests around is <strong>not</strong> for now — it's for six months from now, when you change something and forget what depended on it.
+    </p>
+  </div>
+
+  <p style="margin-top: 24px; font-size: 15px;" class="muted italic">
+    This loop is what you'll do in Exercise 3 — write a failing test, fix the bug, re-run the suite.
+  </p>
+</section>
+
+<!-- =============================================================== -->
+<!-- 10. WHAT MAKES A GOOD TEST -->
+<!-- =============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Quality</p>
+  <h1 class="medium" style="margin-top: 12px;">What makes a good test</h1>
+
+  <div class="quality-grid">
+    <div class="qbox">
+      <h3>Clear</h3>
+      <p>The name tells you what's being tested. If it fails six months from now, you can read it and understand what broke.</p>
+    </div>
+    <div class="qbox">
+      <h3>Fast</h3>
+      <p>If running the suite is slow, you stop running it. Slow tests are tests that don't get used.</p>
+    </div>
+    <div class="qbox">
+      <h3>Isolated</h3>
+      <p>One test per concept. Don't test five things in one block — when it fails, you won't know which one broke.</p>
+    </div>
+    <div class="qbox">
+      <h3>Deterministic</h3>
+      <p>Same input → same result, every time. No random inputs, no dependency on the current date or wall-clock time.</p>
+    </div>
+  </div>
+
+  <p style="margin-top: 30px; font-size: 16px;" class="muted italic">
+    A test you don't trust is worse than no test — it teaches you to ignore failures.
+  </p>
+</section>
+
+<!-- =============================================================== -->
+<!-- 14. HAND-OFF TO NOTEBOOK -->
+<!-- =============================================================== -->
+<section class="slide dark">
+  <p class="eyebrow">Next</p>
+
+  <div style="margin-top: 80px;">
+    <h1 class="huge" style="color: white;">Now let's see it run.</h1>
+    <div class="accent-rule" style="margin-top: 18px;"></div>
+  </div>
+
+  <div style="margin-top: 60px; max-width: 900px;">
+    <h2 style="color: white; font-size: 28px;">A live walkthrough — pytest in Jupyter</h2>
+    <p style="color: #b8b8b8; font-size: 18px; margin-top: 16px; line-height: 1.6;">
+      We'll go cell by cell through a notebook covering every pattern from this lecture: basic tests, error checks, floating-point comparison, parametrize, and what a real failure message looks like.
+      <br><br>
+      Open <code class="accent">pytest_examples.ipynb</code> and follow along.
+    </p>
+  </div>
+
+  <div style="position: absolute; bottom: 70px; left: 70px;">
+    <p style="font-family: Georgia, serif; font-size: 28px; color: var(--accent); font-weight: 700;">
+      Shift + Enter →
+    </p>
+  </div>
+</section>
+
+<!-- =============================================================== -->
+<!-- 15. FINAL CODING EXERCISE -->
+<!-- =============================================================== -->
+<section class="slide">
+  <span class="exercise-tag">Code · 15 min</span>
+  <h1 class="medium" style="margin-top: 22px;">Your turn — write the tests</h1>
+
+  <p style="margin-top: 14px; font-size: 16px;" class="muted italic">
+    In a new notebook cell, write a small test suite for this function.
+  </p>
+
+  <div class="codebox" style="margin-top: 18px; font-size: 15px; line-height: 1.5;">
+    <span style="color: var(--muted);"># Returns True if s reads the same forwards and backwards,</span><br>
+    <span style="color: var(--muted);"># ignoring case and ignoring spaces. Empty string is a palindrome.</span><br>
+    <span style="color: var(--accent);">def</span> is_palindrome(s):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;cleaned = s.lower().replace(<span style="color: var(--good);">" "</span>, <span style="color: var(--good);">""</span>)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: var(--accent);">return</span> cleaned == cleaned[::-<span style="color: var(--accent);">1</span>]
+  </div>
+
+  <div class="ex-prompt" style="margin-top: 18px;">
+    <p><strong>Write at least 5 tests covering different partitions.</strong> Your suite should include:</p>
+    <ul class="dot" style="margin-top: 8px;">
+      <li>at least one test using <code>parametrize</code></li>
+      <li>at least one descriptive test name a stranger could understand</li>
+      <li>at least one input you think might <em>break</em> the function</li>
+    </ul>
+  </div>
+
+  <div class="ex-meta">
+    <span><strong>Pairs.</strong> 12 min to write, 3 min to share something surprising you found.</span>
+  </div>
+</section>
+
+</div>
+
+<!-- =============================================================== -->
+<!-- Controls -->
+<!-- =============================================================== -->
+<div class="controls">
+  <button onclick="prev()">←</button>
+  <span class="counter"><span id="cur">1</span> / <span id="tot">0</span></span>
+  <button onclick="next()">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  document.getElementById('tot').textContent = slides.length;
+
+  function show(n) {
+    slides[i].classList.remove('active');
+    i = (n + slides.length) % slides.length;
+    slides[i].classList.add('active');
+    document.getElementById('cur').textContent = i + 1;
+  }
+  function next() { show(i + 1); }
+  function prev() { show(i - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { next(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prev(); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(slides.length - 1); }
+  });
+
+  // Click to advance (but not on buttons)
+  document.querySelectorAll('.slide').forEach(s => {
+    s.addEventListener('click', e => {
+      if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'CODE') next();
+    });
+  });
+</script>
+
+</body>
+</html>
